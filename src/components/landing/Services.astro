@@ -1,9 +1,8 @@
 ---
 import { Image } from "astro:assets";
-import advertisingSvg from "@assets/images/services/advertising.svg?raw";
-import designSvg from "@assets/images/services/creative-designer-doing-multitasking.svg?raw";
-import mobileSvg from "@assets/images/services/mobile-app-ui-ux-design.svg?raw";
-import websiteSvg from "@assets/images/services/website-ui-ux-development.svg?raw";
+import personalizaSvg from "@assets/images/services/personaliza.svg?raw";
+import model3dSvg from "@assets/images/services/model3d.svg?raw";
+import deliverySvg from "@assets/images/services/delivery.svg?raw";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "@i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -14,19 +13,19 @@ const { class: className } = Astro.props;
 
 const points = [
 	{
-		title: t("websites.title"),
-		content: t("websites.content"),
-		image: websiteSvg,
+		title: t("personaliza.title"),
+		content: t("personaliza.content"),
+		image: personalizaSvg,
 	},
 	{
-		title: t("apps.title"),
-		content: t("apps.content"),
-		image: mobileSvg,
+		title: t("model3d.title"),
+		content: t("model3d.content"),
+		image: model3dSvg,
 	},
 	{
-		title: t("uiux.title"),
-		content: t("uiux.content"),
-		image: designSvg,
+		title: t("delivery.title"),
+		content: t("delivery.content"),
+		image: deliverySvg,
 	},	
 ];
 ---

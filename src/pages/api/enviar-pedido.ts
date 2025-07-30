@@ -115,7 +115,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🎽 Nuevo Pedido Camiseta Mahou Personalizada</h1>
+              <h1>Nuevo Pedido Camiseta Mahou Personalizada</h1>
             </div>
             
             <div class="content">
@@ -132,13 +132,13 @@ export const POST: APIRoute = async ({ request, redirect }) => {
               </div>
               
               <div class="details">
-                <h2>👕 Detalles del Producto</h2>
+                <h2>Detalles del Producto</h2>
                 <p><strong>Talla:</strong> <span class="highlight">${validatedData.talla}</span></p>
                 <p><strong>Tipo:</strong> Camiseta Mahou Personalizada (GRATUITA)</p>
               </div>
               
               <div class="logo-info">
-                <h2>🎨 Personalización del Logo</h2>
+                <h2>Personalización del Logo</h2>
                 <p><strong>Logo seleccionado:</strong> <span class="highlight">${validatedData.selectedLogo.toUpperCase()}</span></p>
                 <p><strong>Tamaño del logo:</strong> ${validatedData.logoSize}</p>
                 <p><strong>Ubicación:</strong> ${validatedData.logoPosition}</p>
@@ -146,13 +146,13 @@ export const POST: APIRoute = async ({ request, redirect }) => {
               
               ${validatedData.comentarios ? `
               <div class="details">
-                <h2>💬 Comentarios del Cliente</h2>
+                <h2>Comentarios del Cliente</h2>
                 <p><em>"${sanearParaEmail(validatedData.comentarios)}"</em></p>
               </div>
               ` : ''}
               
               <div class="details">
-                <h2>🎨 Diseño Personalizado</h2>
+                <h2>Diseño Personalizado</h2>
                 <p>El diseño personalizado se encuentra adjunto a este correo como imagen PNG de alta resolución.</p>
                 <p><em>Nombre del archivo: diseño-mahou-${validatedData.nombre.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.png</em></p>
               </div>
@@ -180,8 +180,8 @@ export const POST: APIRoute = async ({ request, redirect }) => {
             </div>
             
             <div class="footer">
-              <p>📧 Email generado automáticamente por el Sistema de Pedidos Mahou</p>
-              <p>🕐 Fecha: ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}</p>
+              <p>Email generado automáticamente por el Sistema de Pedidos Mahou</p>
+              <p>Fecha: ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}</p>
             </div>
           </div>
         </body>
@@ -195,7 +195,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     const { data: responseData, error } = await resend.emails.send({
       from: fromEmail,
       to: [direccionImpresion],
-      subject: `🎽 Nuevo Pedido Mahou: ${sanearParaEmail(validatedData.nombre)} - Talla ${validatedData.talla} - ${validatedData.logoPosition}`,
+      subject: `Nuevo Pedido Mahou: ${sanearParaEmail(validatedData.nombre)} - Talla ${validatedData.talla} - ${validatedData.logoPosition}`,
       html: htmlBody,
       attachments: [{
         filename: nombreArchivo,
