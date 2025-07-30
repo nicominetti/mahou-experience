@@ -1,0 +1,21 @@
+<!-- Plantilla de camiseta en formato SVG para PNG -->
+<svg width="400" height="500" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo transparente -->
+  <rect width="400" height="500" fill="white" opacity="0"/>
+  
+  <!-- Camiseta -->
+  <path d="M70 100 L70 150 L60 160 L60 450 L340 450 L340 160 L330 150 L330 100 L290 100 L290 60 C290 30 260 20 200 20 C140 20 110 30 110 60 L110 100 Z" 
+        fill="#ffffff" 
+        stroke="#d1d5db" 
+        stroke-width="3"/>
+  
+  <!-- Cuello -->
+  <path d="M150 20 Q200 50 250 20" 
+        fill="none" 
+        stroke="#d1d5db" 
+        stroke-width="3"/>
+  
+  <!-- Mangas -->
+  <ellipse cx="70" cy="125" rx="25" ry="50" fill="#ffffff" stroke="#d1d5db" stroke-width="3"/>
+  <ellipse cx="330" cy="125" rx="25" ry="50" fill="#ffffff" stroke="#d1d5db" stroke-width="3"/>
+</svg>

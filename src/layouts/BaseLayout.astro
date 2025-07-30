@@ -1,0 +1,137 @@
+---
+import BlobCursorFollower from "@/components/global/BlobCursorFollower.astro";
+import { AstroSeo, type AstroSeoProps } from "@astrolib/seo";
+import BaseHead from "@components/BaseHead.astro";
+import BackgroundTexture from "@components/global/BackgroundTexture.astro";
+// import Footer from "@components/global/Footer.astro";
+import Footer from "@components/global/Footer.astro";
+import Navigation from "@components/global/Navigation.astro";
+import { getLangFromUrl } from "../i18n/utils";
+
+// Import typography override styles
+import "../styles/typography-override.css";
+
+const { pathname } = Astro.url;
+
+type Props = {
+	seo?: AstroSeoProps;
+};
+
+const { seo: seoProp } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+
+const shareImage = new URL("/images/meta/mintaka_share.gif", Astro.site).toString();
+
+const defaultSeo: AstroSeoProps = {
+	title: "Mahou Experience",
+	description:
+		"Diseña tu camiseta única en el corazón del Santiago Bernabéu. Una experiencia exclusiva y completamente gratuita para ti.",
+	canonical: "https://mahou.es",
+	openGraph: {
+		url: "https://mahou.es",
+		title: "Mahou Experience",
+		description:
+			"Diseña tu camiseta única en el corazón del Santiago Bernabéu. Una experiencia exclusiva y completamente gratuita para ti.",
+		images: [
+			{
+				url: shareImage,
+				width: 1200,
+				height: 630,
+				alt: "Social open graph",
+				type: "image/gif",
+			},
+			{
+				url: shareImage,
+				width: 4096,
+				height: 4096,
+				alt: "Twitter open graph",
+				type: "image/gif",
+			},
+		],
+		site_name: "Mahou",
+	},
+	twitter: {
+		handle: "@nicominetti",
+		site: "@nicominetti",
+		cardType: "summary_large_image",
+	},
+	additionalMetaTags: [
+		{
+			name: "publisher",
+			content: "Mahou Fútbol",
+		},
+	],
+};
+
+const seo = {
+	...defaultSeo,
+	...seoProp,
+};
+
+function cursorFollowerActive() {
+	// Excluir la página del diseñador de camisetas
+	if (pathname === "/disenar" || pathname === "/disenar/") {
+		return false;
+	}
+	// Activar en todas las demás páginas
+	return true;
+}
+---
+
+<html lang={lang}>
+	<head>
+		<BaseHead />
+		<AstroSeo {...seo} />
+	</head>
+	<body class="bg-slate-50 global-typography">
+		<BackgroundTexture />
+		<Navigation />
+		{cursorFollowerActive() && <BlobCursorFollower />}
+		<slot />
+		<Footer />
+		
+		
+		<!-- Typography colors script -->
+		<script is:inline>
+			// Force typography colors with JavaScript
+			function applyTypographyColors() {
+				const colors = {
+					paragraph: '#43526e',
+					heading: '#14142b', 
+					link: '#3e31fa'
+				};
+
+				// Apply paragraph colors
+				document.querySelectorAll('p').forEach(el => {
+					if (!el.className.includes('text-') && !el.style.color) {
+						el.style.setProperty('color', colors.paragraph, 'important');
+					}
+				});
+
+				// Apply heading colors
+				document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
+					if (!el.className.includes('text-') && !el.style.color) {
+						el.style.setProperty('color', colors.heading, 'important');
+					}
+				});
+
+				// Apply link colors
+				document.querySelectorAll('a').forEach(el => {
+					if (!el.className.includes('text-') && !el.style.color) {
+						el.style.setProperty('color', colors.link, 'important');
+					}
+				});
+
+				console.log('✅ Typography colors applied!');
+			}
+
+			// Apply immediately and on events
+			applyTypographyColors();
+			document.addEventListener('DOMContentLoaded', applyTypographyColors);
+			document.addEventListener('astro:page-load', applyTypographyColors);
+			setTimeout(applyTypographyColors, 100);
+			setTimeout(applyTypographyColors, 500);
+		</script>
+	</body>
+</html>

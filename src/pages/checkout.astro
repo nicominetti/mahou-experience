@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Checkout from "@/components/forms/Checkout.astro";
+import type { AstroSeoProps } from "@astrolib/seo";
+
+const seo: AstroSeoProps = {
+	title: "Finalizar Pedido - Camiseta Mahou Personalizada",
+	description: "Completa tus datos para recibir tu camiseta Mahou personalizada gratuita. Solo necesitamos tu dirección de envío.",
+	canonical: "https://mahou.co/checkout/",
+};
+---
+
+<BaseLayout seo={seo}>
+	<Checkout />
+</BaseLayout>

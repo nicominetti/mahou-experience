@@ -1,0 +1,96 @@
+---
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const { class: className } = Astro.props;
+
+const services = [
+	{
+		title: t("services.design.title"),
+		content: t("services.design.content"),
+		icon: "🎨",
+		color: "bg-blue-500"
+	},
+	{
+		title: t("services.quality.title"),
+		content: t("services.quality.content"),
+		icon: "⭐",
+		color: "bg-green-500"
+	},
+	{
+		title: t("services.fast.title"),
+		content: t("services.fast.content"),
+		icon: "🚀",
+		color: "bg-purple-500"
+	},
+	{
+		title: t("services.support.title"),
+		content: t("services.support.content"),
+		icon: "🤝",
+		color: "bg-orange-500"
+	},
+];
+---
+
+<section id="services" class:list={["section py-20 lg:py-32 bg-white", className]}>
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="text-center mb-16">
+			<h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900">
+				¿Por qué elegirnos?
+			</h2>
+			<p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+				{t("tagline")}
+			</p>
+		</div>
+		
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+			{services.map(({ title, content, icon, color }) => (
+				<div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-center hover:transform hover:-translate-y-1">
+					<div class={`${color} w-16 h-16 rounded-full flex items-center justify-center text-3xl text-white mx-auto mb-4 shadow-lg`}>
+						{icon}
+					</div>
+					<h3 class="text-xl font-bold mb-3 text-gray-900">{title}</h3>
+					<p class="text-gray-600 leading-relaxed">{content}</p>
+				</div>
+			))}
+		</div>
+		
+		<!-- CTA Section -->
+		<div class="text-center">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white shadow-2xl">
+				<h3 class="text-3xl font-bold mb-4">¿Listo para crear tu diseño?</h3>
+				<p class="text-xl mb-6 opacity-90">
+					Empieza ahora y ve tu idea convertirse en realidad
+				</p>
+				<a 
+					href="/disenar" 
+					class="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg text-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:transform hover:scale-105 shadow-lg"
+				>
+					🎨 Diseñar Ahora
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	/* Custom typography colors for TShirtServices */
+	.tshirt-services p:not([class*="text-"]) {
+		color: #43526e !important;
+	}
+
+	.tshirt-services h1:not([class*="text-"]), 
+	.tshirt-services h2:not([class*="text-"]), 
+	.tshirt-services h3:not([class*="text-"]), 
+	.tshirt-services h4:not([class*="text-"]), 
+	.tshirt-services h5:not([class*="text-"]), 
+	.tshirt-services h6:not([class*="text-"]) {
+		color: #14142b !important;
+	}
+
+	.tshirt-services a:not([class*="text-"]) {
+		color: #3e31fa !important;
+	}
+</style>

@@ -1,0 +1,19 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo circular dorado -->
+  <circle cx="100" cy="100" r="90" fill="#FFD700" stroke="#FF6B35" stroke-width="4"/>
+  
+  <!-- Texto MAHOU -->
+  <text x="100" y="90" text-anchor="middle" fill="#8B4513" font-size="24" font-weight="bold" font-family="Arial">
+    MAHOU
+  </text>
+  
+  <!-- Subtítulo -->
+  <text x="100" y="115" text-anchor="middle" fill="#8B4513" font-size="12" font-family="Arial">
+    SAN MIGUEL
+  </text>
+  
+  <!-- Elementos decorativos -->
+  <circle cx="100" cy="140" r="3" fill="#FF6B35"/>
+  <circle cx="90" cy="140" r="2" fill="#FF6B35"/>
+  <circle cx="110" cy="140" r="2" fill="#FF6B35"/>
+</svg>

@@ -1,0 +1,50 @@
+---
+---
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Modelos 3D - Mintaka</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🔍 Analizador de Modelos 3D - Sistema Mahou</h1>
+            <p>Encuentra el modelo óptimo para decals en mangas</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div id="model-analyzer-root"></div>
+    </div>
+
+    <script type="module">
+        import React from 'https://esm.sh/react@18';
+        import ReactDOM from 'https://esm.sh/react-dom@18/client';
+        import ModelAnalyzer from '../components/ModelAnalyzer.jsx';
+        
+        const root = ReactDOM.createRoot(document.getElementById('model-analyzer-root'));
+        root.render(React.createElement(ModelAnalyzer));
+    </script>
+</body>
+</html>

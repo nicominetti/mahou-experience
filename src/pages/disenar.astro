@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import TShirtDesignerSection from "@/components/designer/TShirtDesignerSection.astro";
+import type { AstroSeoProps } from "@astrolib/seo";
+
+const seo: AstroSeoProps = {
+	title: "Diseñador de Camisetas - Crea tu diseño personalizado Mahou",
+	description: "Diseña tu camiseta personalizada con nuestro editor interactivo 3D. Añade logos Mahou, cambia posiciones y crea tu diseño único.",
+	canonical: "https://mahou.co/disenar/",
+};
+---
+
+<BaseLayout seo={seo}>
+	<TShirtDesignerSection />
+</BaseLayout>

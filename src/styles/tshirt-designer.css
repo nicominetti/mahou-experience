@@ -1,0 +1,42 @@
+/* Estilos específicos para el diseñador 3D */
+.tshirt-canvas {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.tshirt-canvas canvas {
+  border-radius: 12px;
+}
+
+/* Animaciones suaves para los controles */
+.color-picker-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.color-picker-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.logo-selector-button {
+  transition: all 0.3s ease-in-out;
+}
+
+.logo-selector-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading spinner personalizado */
+.custom-spinner {
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

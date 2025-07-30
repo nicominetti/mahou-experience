@@ -1,0 +1,85 @@
+---
+import Title from "@components/global/Title.astro";
+import CheckoutForm from "@components/checkout/CheckoutForm.jsx";
+
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "@i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+---
+
+<section class="isolate px-6 py-24 sm:py-32 lg:px-8">
+	<div class="absolute inset-x-0 top-[-10rem] transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]" aria-hidden="true">
+		<div class="gradient-element"></div>
+	</div>
+	<div class="mx-auto">
+		<Title 
+			class="pb-10 pt-20 uppercase" 
+			title="Finalizar Pedido" 
+			subtitle="Completa tus datos para recibir tu camiseta Mahou personalizada gratuita" 
+		/>
+		
+		<!-- Formulario de checkout con estilos de contact -->
+		<div class="mx-auto max-w-2xl pt-12 lg:pt-20">
+			<CheckoutForm client:load />
+		</div>
+	</div>
+</section>
+
+<style>
+	.gradient-element {
+		@apply relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem];
+		clip-path: polygon(
+			74.1% 44.1%,
+			100% 61.6%,
+			97.5% 26.9%,
+			85.5% 0.1%,
+			80.7% 2%,
+			72.5% 32.5%,
+			60.2% 62.4%,
+			52.4% 68.1%,
+			47.5% 58.3%,
+			45.2% 34.5%,
+			27.5% 76.7%,
+			0.1% 64.9%,
+			17.9% 100%,
+			27.6% 76.8%,
+			76.1% 97.7%,
+			74.1% 44.1%
+		);
+	}
+
+	/* Estilos globales para campos de formulario */
+	:global(.form-field) {
+		@apply block;
+	}
+
+	:global(.form-label) {
+		@apply flex pl-1 text-sm font-semibold leading-6 text-gray-900;
+	}
+
+	:global(.form-input),
+	:global(.form-textarea),
+	:global(.form-select) {
+		@apply pointer-events-auto relative m-0 w-full cursor-text rounded-lg border-0 bg-slate-200 px-5 py-2 text-xl font-normal not-italic outline-none placeholder:text-gray-400 focus:ring-slate-500;
+	}
+
+	/* Custom typography colors para esta sección */
+	section p:not([class*="text-"]) {
+		color: #43526e !important;
+	}
+
+	section h1:not([class*="text-"]), 
+	section h2:not([class*="text-"]), 
+	section h3:not([class*="text-"]), 
+	section h4:not([class*="text-"]), 
+	section h5:not([class*="text-"]), 
+	section h6:not([class*="text-"]) {
+		color: #14142b !important;
+	}
+
+	section a:not([class*="text-"]) {
+		color: #3e31fa !important;
+	}
+</style>

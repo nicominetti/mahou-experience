@@ -1,0 +1,21 @@
+<svg width="300" height="400" viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Camiseta básica -->
+  <path d="M50 80 L50 120 L40 130 L40 380 L260 380 L260 130 L250 120 L250 80 L220 80 L220 50 C220 30 200 20 150 20 C100 20 80 30 80 50 L80 80 Z" 
+        fill="#f8f9fa" 
+        stroke="#e9ecef" 
+        stroke-width="2"/>
+  
+  <!-- Cuello -->
+  <path d="M120 20 Q150 40 180 20" 
+        fill="none" 
+        stroke="#e9ecef" 
+        stroke-width="2"/>
+  
+  <!-- Mangas -->
+  <ellipse cx="50" cy="100" rx="20" ry="40" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+  <ellipse cx="250" cy="100" rx="20" ry="40" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+  
+  <!-- Área de diseño (guía visual) -->
+  <rect x="90" y="100" width="120" height="120" fill="none" stroke="#dee2e6" stroke-width="1" stroke-dasharray="5,5" opacity="0.5"/>
+  <text x="150" y="165" text-anchor="middle" fill="#6c757d" font-size="12" font-family="Arial">Área de diseño</text>
+</svg>
