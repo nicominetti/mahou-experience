@@ -1,71 +1,143 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import type { AstroSeoProps } from "@astrolib/seo";
+
+const seo: AstroSeoProps = {
+	title: "¡Pedido Exitoso! - Mahou Experience",
+	description: "Tu camiseta personalizada Mahou está en camino",
+	canonical: "https://mahou.co/pedido-exitoso/",
+};
 ---
 
-<BaseLayout 
-  seo={{
-    title: "¡Pedido Enviado! - Confirmación",
-    description: "Tu pedido ha sido enviado exitosamente. Te contactaremos pronto."
-  }}
->
-  <main class="container mx-auto px-4 py-16">
-    <div class="max-w-2xl mx-auto text-center">
-      <div class="mb-8">
-        <svg class="w-24 h-24 mx-auto text-green-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-        </svg>
-        
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">
-          ¡Pedido Enviado Exitosamente!
-        </h1>
-        
-        <p class="text-xl text-gray-600 mb-8">
-          Hemos recibido tu diseño y lo hemos enviado a nuestro equipo de producción. 
-          Te contactaremos en las próximas 24 horas para confirmar los detalles y el tiempo de entrega.
-        </p>
+<BaseLayout seo={seo}>
+
+<div class="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center px-4">
+  <div class="max-w-2xl mx-auto text-center">
+    <!-- Animación de éxito -->
+    <div class="mb-8 animate-bounce">
+      <div class="w-24 h-24 mx-auto bg-green-500 rounded-full flex items-center justify-center text-white text-4xl">
+        ✅
       </div>
+    </div>
+
+    <!-- Título principal -->
+    <h1 class="text-4xl md:text-6xl font-black text-gray-900 mb-4">
+      ¡PEDIDO EXITOSO!
+    </h1>
+    
+    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+      <h2 class="text-2xl font-bold text-green-600 mb-4">
+        🎉 ¡Tu camiseta Mahou personalizada está en camino!
+      </h2>
       
-      <div class="bg-gray-50 rounded-lg p-6 mb-8">
-        <h2 class="text-2xl font-semibold mb-4">¿Qué sigue?</h2>
-        <div class="space-y-4 text-left">
-          <div class="flex items-start">
-            <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4">1</span>
-            <div>
-              <h3 class="font-semibold">Revisión del diseño</h3>
-              <p class="text-gray-600">Nuestro equipo revisará tu diseño y se asegurará de que esté listo para impresión.</p>
-            </div>
+      <div class="space-y-4 text-left max-w-md mx-auto">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">📦</span>
+          <div>
+            <p class="font-semibold">Producto confirmado</p>
+            <p class="text-sm text-gray-600">Camiseta Mahou personalizada GRATUITA</p>
           </div>
-          <div class="flex items-start">
-            <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4">2</span>
-            <div>
-              <h3 class="font-semibold">Confirmación y presupuesto</h3>
-              <p class="text-gray-600">Te enviaremos un presupuesto final y confirmaremos todos los detalles contigo.</p>
-            </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">⏰</span>
+          <div>
+            <p class="font-semibold">Tiempo de entrega</p>
+            <p class="text-sm text-gray-600">24-48 horas hábiles</p>
           </div>
-          <div class="flex items-start">
-            <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4">3</span>
-            <div>
-              <h3 class="font-semibold">Producción y entrega</h3>
-              <p class="text-gray-600">Una vez confirmado, procederemos con la producción y te mantendremos informado.</p>
-            </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🚚</span>
+          <div>
+            <p class="font-semibold">Envío gratuito</p>
+            <p class="text-sm text-gray-600">A la dirección proporcionada</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🎯</span>
+          <div>
+            <p class="font-semibold">Personalización 3D</p>
+            <p class="text-sm text-gray-600">Logos aplicados según tu diseño</p>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+      <h3 class="text-lg font-bold text-blue-800 mb-2">📧 ¿Qué sigue ahora?</h3>
+      <ul class="text-blue-700 text-sm space-y-2">
+        <li>✅ Hemos recibido tu pedido y lo estamos procesando</li>
+        <li>✅ Nuestro equipo verificará tu diseño personalizado</li>
+        <li>✅ Tu camiseta será impresa con logos oficiales Mahou</li>
+        <li>✅ Recibirás un seguimiento cuando esté en camino</li>
+      </ul>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="space-y-4">
+      <a 
+        href="/disenar" 
+        class="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 transform hover:scale-105"
+      >
+        🎨 Diseñar Otra Camiseta
+      </a>
       
-      <div class="space-x-4">
-        <a 
-          href="/disenar" 
-          class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Crear Otro Diseño
-        </a>
+      <div>
         <a 
           href="/" 
-          class="inline-block bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors"
+          class="inline-block text-gray-600 hover:text-gray-800 font-medium transition-colors"
         >
-          Volver al Inicio
+          ← Volver al Inicio
         </a>
       </div>
     </div>
-  </main>
+
+    <!-- Footer promocional -->
+    <div class="mt-12 text-center">
+      <p class="text-sm text-gray-500 mb-2">
+        ¡Gracias por participar en Mahou Experience!
+      </p>
+      <p class="text-xs text-gray-400">
+        Promoción válida hasta agotar stock • Producto 100% gratuito
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Limpiar localStorage al cargar la página de éxito
+  document.addEventListener('DOMContentLoaded', function() {
+    // Esperar un poco para que se vea la página antes de limpiar
+    setTimeout(() => {
+      localStorage.removeItem('mahou_checkout_data');
+      console.log('✅ Datos del pedido limpiados exitosamente');
+    }, 2000);
+  });
+</script>
+
+<style>
+  /* Animación personalizada para el check */
+  @keyframes checkmark {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .animate-checkmark {
+    animation: checkmark 0.6s ease-out forwards;
+  }
+</style>
+
 </BaseLayout>

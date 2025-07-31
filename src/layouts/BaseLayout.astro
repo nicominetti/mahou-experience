@@ -70,8 +70,10 @@ const seo = {
 };
 
 function cursorFollowerActive() {
-	// Excluir la página del diseñador de camisetas
-	if (pathname === "/disenar" || pathname === "/disenar/") {
+	// Excluir páginas específicas donde no queremos el cursor blob
+	if (pathname === "/disenar" || pathname === "/disenar/" ||
+		pathname === "/checkout" || pathname === "/checkout/" ||
+		pathname === "/pedido-exitoso" || pathname === "/pedido-exitoso/") {
 		return false;
 	}
 	// Activar en todas las demás páginas

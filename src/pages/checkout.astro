@@ -1,15 +1,334 @@
 ---
+import Title from "@components/global/Title.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import Checkout from "@/components/forms/Checkout.astro";
 import type { AstroSeoProps } from "@astrolib/seo";
 
 const seo: AstroSeoProps = {
-	title: "Finalizar Pedido - Camiseta Mahou Personalizada",
-	description: "Completa tus datos para recibir tu camiseta Mahou personalizada gratuita. Solo necesitamos tu dirección de envío.",
+	title: "Checkout - Finalizar Pedido",
+	description: "Completa tu pedido de camiseta personalizada Mahou",
 	canonical: "https://mahou.co/checkout/",
 };
 ---
 
-<BaseLayout seo={seo}>
-	<Checkout />
+<BaseLayout seo={seo}>  
+
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mx-auto">
+      <Title 
+        class="pb-10 pt-20 uppercase" 
+        title="Finalizar Pedido" 
+        subtitle="Completa tus datos para recibir tu camiseta Mahou personalizada gratuita" 
+      />		
+    </div>
+    <!-- Resumen del pedido -->
+    <div id="order-summary" class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">📋 Resumen de tu Pedido</h2>
+      <div id="summary-content" class="space-y-4">
+        <!-- El contenido se cargará dinámicamente -->
+        <div class="animate-pulse">
+          <div class="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+          <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+      <form id="checkout-form" method="POST" action="/api/enviar-pedido" class="space-y-8">
+        <!-- Datos ocultos del pedido -->
+        <input type="hidden" id="order-data" name="orderData" value="">
+        
+        <!-- Datos de Contacto -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-6">Datos de Contacto</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">
+                Nombre completo*
+              </label>
+              <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                Email*
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Dirección de Envío -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-6">Dirección de Envío</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="tipoDocumento" class="block text-sm font-medium text-gray-700 mb-2">
+                Tipo de documento*
+              </label>
+              <select
+                id="tipoDocumento"
+                name="tipoDocumento"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="DNI">DNI</option>
+                <option value="NIE">NIE</option>
+                <option value="Pasaporte">Pasaporte</option>
+              </select>
+            </div>
+            <div>
+              <label for="numeroDocumento" class="block text-sm font-medium text-gray-700 mb-2">
+                Número de documento*
+              </label>
+              <input
+                type="text"
+                id="numeroDocumento"
+                name="numeroDocumento"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <div>
+              <label for="tipoVia" class="block text-sm font-medium text-gray-700 mb-2">
+                Tipo de vía*
+              </label>
+              <select
+                id="tipoVia"
+                name="tipoVia"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="Calle">Calle</option>
+                <option value="Avenida">Avenida</option>
+                <option value="Plaza">Plaza</option>
+                <option value="Paseo">Paseo</option>
+              </select>
+            </div>
+            <div>
+              <label for="direccion" class="block text-sm font-medium text-gray-700 mb-2">
+                Dirección*
+              </label>
+              <input
+                type="text"
+                id="direccion"
+                name="direccion"
+                placeholder="Nombre de la vía, número, piso..."
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <div class="md:col-span-2">
+              <label for="otrosDatos" class="block text-sm font-medium text-gray-700 mb-2">
+                Otros datos
+              </label>
+              <input
+                type="text"
+                id="otrosDatos"
+                name="otrosDatos"
+                placeholder="Escalera, portal, timbre..."
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <div>
+              <label for="codigoPostal" class="block text-sm font-medium text-gray-700 mb-2">
+                Código postal*
+              </label>
+              <input
+                type="text"
+                id="codigoPostal"
+                name="codigoPostal"
+                required
+                pattern="[0-9]{5}"
+                title="Código postal debe tener 5 dígitos"
+                placeholder="28001"
+                maxlength="5"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <div>
+              <label for="poblacion" class="block text-sm font-medium text-gray-700 mb-2">
+                Población*
+              </label>
+              <input
+                type="text"
+                id="poblacion"
+                name="poblacion"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <div>
+              <label for="provincia" class="block text-sm font-medium text-gray-700 mb-2">
+                Provincia*
+              </label>
+              <input
+                type="text"
+                id="provincia"
+                name="provincia"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <div>
+              <label for="pais" class="block text-sm font-medium text-gray-700 mb-2">
+                País*
+              </label>
+              <input
+                type="text"
+                id="pais"
+                name="pais"
+                value="España"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <div class="md:col-span-2">
+              <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">
+                Teléfono*
+              </label>
+              <input
+                type="tel"
+                id="telefono"
+                name="telefono"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de envío -->
+        <div class="pt-6">
+          <button
+            type="submit"
+            id="submit-btn"
+            class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white text-lg font-bold py-4 rounded-xl shadow-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 transform hover:scale-[1.02]"
+          >
+            🚀 FINALIZAR PEDIDO GRATUITO
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Cargar datos del pedido al cargar la página
+  document.addEventListener('DOMContentLoaded', function() {
+    const orderData = localStorage.getItem('mahou_checkout_data');
+    
+    if (orderData) {
+      try {
+        const data = JSON.parse(orderData);
+        
+        // Llenar el campo oculto
+        document.getElementById('order-data').value = orderData;
+        
+        // Crear el resumen visual
+        const summaryContent = document.getElementById('summary-content');
+        summaryContent.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-semibold text-gray-900 mb-2">👔 Camiseta</h4>
+              <p class="text-sm text-gray-700">Talla: <span class="font-bold">${data.size}</span></p>
+              <p class="text-sm text-gray-700">Género: <span class="font-bold">${data.gender}</span></p>
+              <p class="text-sm text-gray-700">Color: <span class="inline-block w-4 h-4 rounded-full border" style="background-color: ${data.color.hex}"></span> ${data.color.hex}</p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-semibold text-gray-900 mb-2">🏷️ Logos</h4>
+              <p class="text-sm text-gray-700">Total: <span class="font-bold">${data.summary.totalLogos}</span></p>
+              <p class="text-sm text-gray-700">Tamaño: <span class="font-bold">${['Pequeño', 'Medio', 'Grande'][data.logoSize]}</span></p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-semibold text-gray-900 mb-2">📍 Posiciones</h4>
+              <div class="space-y-1">
+                ${data.summary.positions.map(pos => 
+                  `<p class="text-xs text-gray-600">• ${pos.position}: ${pos.logo}</p>`
+                ).join('')}
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <p class="text-sm text-blue-800">
+              <strong>🎉 ¡Felicidades!</strong> Tu camiseta personalizada será enviada <strong>GRATIS</strong> a la dirección que proporciones.
+            </p>
+          </div>
+        `;
+        
+      } catch (error) {
+        console.error('Error al cargar datos del pedido:', error);
+        
+        // Mostrar mensaje de error
+        const summaryContent = document.getElementById('summary-content');
+        summaryContent.innerHTML = `
+          <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p class="text-yellow-800">
+              ⚠️ No se pudieron cargar los datos del pedido. Por favor, regresa al diseñador para configurar tu camiseta.
+            </p>
+            <a href="/disenar" class="text-blue-600 hover:text-blue-800 font-medium">
+              ← Volver al Diseñador
+            </a>
+          </div>
+        `;
+      }
+    } else {
+      // No hay datos - redirigir al diseñador
+      const summaryContent = document.getElementById('summary-content');
+      summaryContent.innerHTML = `
+        <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-red-800">
+            ❌ No hay ningún pedido en proceso. Por favor, diseña tu camiseta primero.
+          </p>
+          <a href="/disenar" class="text-blue-600 hover:text-blue-800 font-medium">
+            ← Ir al Diseñador
+          </a>
+        </div>
+      `;
+    }
+  });
+  
+  // Envío del formulario
+  document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Validar código postal antes del envío
+    const codigoPostal = document.getElementById('codigoPostal').value.trim();
+    if (!/^[0-9]{5}$/.test(codigoPostal)) {
+      alert('Por favor, introduce un código postal válido de 5 dígitos');
+      e.preventDefault();
+      return false;
+    }
+    
+    // Validar que hay datos del pedido
+    const orderData = document.getElementById('order-data').value;
+    if (!orderData || orderData === '{}') {
+      alert('Error: No hay datos del pedido. Por favor, regresa al diseñador.');
+      window.location.href = '/disenar';
+      e.preventDefault();
+      return false;
+    }
+    
+    // Todo correcto, proceder con el envío
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '⏳ Enviando pedido...';
+  });
+</script>
+
 </BaseLayout>

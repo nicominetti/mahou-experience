@@ -2,20 +2,28 @@ import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-// Esquema de validación con Zod
-const orderSchema = z.object({
+// Esquema de validación con Zod para el nuevo formato de checkout
+const checkoutSchema = z.object({
+  // Datos personales
   nombre: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   email: z.string().email('Email inválido'),
   telefono: z.string().min(9, 'Teléfono debe tener al menos 9 dígitos'),
+  
+  // Documentación
+  tipoDocumento: z.enum(['DNI', 'NIE', 'Pasaporte']),
+  numeroDocumento: z.string().min(5, 'Número de documento requerido'),
+  
+  // Dirección
+  tipoVia: z.enum(['Calle', 'Avenida', 'Plaza', 'Paseo']),
   direccion: z.string().min(5, 'Dirección requerida'),
-  ciudad: z.string().min(2, 'Ciudad requerida'),
-  codigoPostal: z.string().min(5, 'Código postal requerido'),
-  talla: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']),
-  logoSize: z.enum(['Pequeño', 'Mediano', 'Grande']),
-  logoPosition: z.string().min(1, 'Posición del logo requerida'),
-  selectedLogo: z.string().min(1, 'Logo seleccionado requerido'),
-  comentarios: z.string().optional(),
-  diseñoImagen: z.string().min(10, 'Imagen de diseño requerida')
+  otrosDatos: z.string().optional().default(''),
+  codigoPostal: z.string().regex(/^[0-9]{5}$/, 'Código postal debe tener exactamente 5 dígitos'),
+  poblacion: z.string().min(2, 'Población requerida'),
+  provincia: z.string().min(2, 'Provincia requerida'),
+  pais: z.string().min(2, 'País requerido'),
+  
+  // Datos del pedido (JSON string)
+  orderData: z.string().min(10, 'Datos del pedido requeridos')
 });
 
 // Función para sanear texto para email (prevenir inyección de headers)
@@ -33,48 +41,42 @@ export const POST: APIRoute = async ({ request, redirect }) => {
   }
 
   try {
-    // Detectar si es JSON o FormData
-    const contentType = request.headers.get('content-type') || '';
-    let rawData;
+    // Obtener datos del formulario
+    const formData = await request.formData();
+    const rawData = {
+      nombre: formData.get('nombre')?.toString() || '',
+      email: formData.get('email')?.toString() || '',
+      telefono: formData.get('telefono')?.toString() || '',
+      tipoDocumento: formData.get('tipoDocumento')?.toString() || '',
+      numeroDocumento: formData.get('numeroDocumento')?.toString() || '',
+      tipoVia: formData.get('tipoVia')?.toString() || '',
+      direccion: formData.get('direccion')?.toString() || '',
+      otrosDatos: formData.get('otrosDatos')?.toString() || '',
+      codigoPostal: formData.get('codigoPostal')?.toString() || '',
+      poblacion: formData.get('poblacion')?.toString() || '',
+      provincia: formData.get('provincia')?.toString() || '',
+      pais: formData.get('pais')?.toString() || '',
+      orderData: formData.get('orderData')?.toString() || '{}'
+    };
 
-    if (contentType.includes('application/json')) {
-      // Manejar JSON (desde checkout)
-      const jsonData = await request.json();
-      rawData = {
-        nombre: jsonData.nombre || '',
-        email: jsonData.email || '',
-        telefono: jsonData.telefono || '',
-        direccion: `${jsonData.tipoVia || ''} ${jsonData.direccion || ''} ${jsonData.otrosDatos || ''}`.trim(),
-        ciudad: jsonData.poblacion || '',
-        codigoPostal: jsonData.codigoPostal || '',
-        talla: jsonData.talla || 'M',
-        logoSize: jsonData.logoSize || 'Mediano',
-        logoPosition: jsonData.logoPosition || 'Pecho centro',
-        selectedLogo: jsonData.selectedLogo || 'mahou',
-        comentarios: jsonData.documento ? `Documento: ${jsonData.tipoDocumento} ${jsonData.documento}` : '',
-        diseñoImagen: jsonData.diseñoImagen || ''
-      };
-    } else {
-      // Manejar FormData (formulario original)
-      const formData = await request.formData();
-      rawData = {
-        nombre: formData.get('nombre')?.toString() || '',
-        email: formData.get('email')?.toString() || '',
-        telefono: formData.get('telefono')?.toString() || '',
-        direccion: formData.get('direccion')?.toString() || '',
-        ciudad: formData.get('ciudad')?.toString() || '',
-        codigoPostal: formData.get('codigoPostal')?.toString() || '',
-        talla: formData.get('talla')?.toString() || 'M',
-        logoSize: formData.get('logoSize')?.toString() || 'Mediano',
-        logoPosition: formData.get('logoPosition')?.toString() || 'Pecho centro',
-        selectedLogo: formData.get('selectedLogo')?.toString() || 'mahou',
-        comentarios: formData.get('comentarios')?.toString() || '',
-        diseñoImagen: formData.get('diseñoImagen')?.toString() || ''
-      };
+    // Log de debugging para ver qué datos llegan
+    console.log('📥 Datos recibidos:', rawData);
+    console.log('🔍 Código postal recibido:', `"${rawData.codigoPostal}"`, 'Length:', rawData.codigoPostal.length);
+
+    // Validar datos con el nuevo esquema
+    const validatedData = checkoutSchema.parse(rawData);
+    
+    // Parsear los datos del pedido JSON
+    let orderDetails;
+    try {
+      orderDetails = JSON.parse(validatedData.orderData);
+    } catch (error) {
+      console.error('Error parsing orderData:', error);
+      return new Response(
+        JSON.stringify({ message: 'Datos del pedido inválidos' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
-
-    // Validar datos con Zod
-    const validatedData = orderSchema.parse(rawData);
 
     // Configurar Resend
     const resend = new Resend(import.meta.env.RESEND_API_KEY);
@@ -89,13 +91,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
       );
     }
 
-    // Extraer datos base64 puros de la imagen
-    const base64Data = validatedData.diseñoImagen.replace(/^data:image\/png;base64,/, "");
-    
-    // Convertir base64 a buffer para el attachment
-    const imageBuffer = Buffer.from(base64Data, 'base64');
-
-    // Construir el cuerpo del email en HTML
+    // Construir el cuerpo del email actualizado con todos los datos
     const htmlBody = `
       <!DOCTYPE html>
       <html>
@@ -103,105 +99,101 @@ export const POST: APIRoute = async ({ request, redirect }) => {
           <meta charset="utf-8">
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #FF6B35; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-            .content { background-color: #f8f9fa; padding: 20px; border: 1px solid #e9ecef; }
-            .details { background-color: white; padding: 15px; border-radius: 5px; margin: 10px 0; }
-            .footer { background-color: #6b7280; color: white; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; }
-            .highlight { background-color: #FFD700; padding: 2px 6px; border-radius: 3px; color: #8B4513; font-weight: bold; }
-            .logo-info { background-color: #FFF7ED; border: 1px solid #FFD700; padding: 15px; border-radius: 5px; margin: 15px 0; }
+            .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #E30613; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+            .content { background-color: #f9f9f9; padding: 25px; border-radius: 0 0 8px 8px; }
+            .details { background-color: white; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #E30613; }
+            .highlight { background-color: #FFE6E6; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
+            .logo-positions { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+            .position-item { background: #f0f8ff; padding: 10px; border-radius: 5px; text-align: center; }
+            .address-section { background: #fff; padding: 15px; border: 2px solid #E30613; border-radius: 8px; margin: 15px 0; }
+            .product-summary { background: linear-gradient(135deg, #E30613, #FF4444); color: white; padding: 20px; border-radius: 8px; margin: 15px 0; }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
-              <h1>Nuevo Pedido Camiseta Mahou Personalizada</h1>
+              <h1>🎯 Nuevo Pedido Camiseta Mahou Personalizada</h1>
+              <p>Pedido recibido: ${new Date().toLocaleString('es-ES')}</p>
             </div>
             
             <div class="content">
-              <p>Se ha recibido un nuevo pedido de camiseta personalizada con los siguientes detalles:</p>
-              
+              <div class="product-summary">
+                <h2>📦 Resumen del Producto</h2>
+                <p><strong>🎽 Camiseta Mahou Personalizada</strong> - <span style="background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 15px;">GRATUITA</span></p>
+                <p><strong>👔 Talla:</strong> ${orderDetails.size}</p>
+                <p><strong>👤 Género:</strong> ${orderDetails.gender === 'masculino' ? 'Masculino' : orderDetails.gender === 'femenino' ? 'Femenino' : 'Unisex'}</p>
+                <p><strong>🎨 Color:</strong> <span style="display: inline-block; width: 20px; height: 20px; background-color: ${orderDetails.color.hex}; border: 1px solid white; border-radius: 50%; vertical-align: middle;"></span> ${orderDetails.color.hex}</p>
+                <p><strong>🏷️ Total Logos:</strong> ${orderDetails.summary.totalLogos}</p>
+                <p><strong>📏 Tamaño Logos:</strong> ${['Pequeño', 'Medio', 'Grande'][orderDetails.logoSize]}</p>
+              </div>
+
               <div class="details">
-                <h2>👤 Información del Cliente</h2>
-                <p><strong>Nombre:</strong> ${sanearParaEmail(validatedData.nombre)}</p>
-                <p><strong>Email:</strong> ${sanearParaEmail(validatedData.email)}</p>
-                <p><strong>Teléfono:</strong> ${sanearParaEmail(validatedData.telefono)}</p>
-                <p><strong>Dirección:</strong> ${sanearParaEmail(validatedData.direccion)}</p>
-                <p><strong>Ciudad:</strong> ${sanearParaEmail(validatedData.ciudad)}</p>
-                <p><strong>Código Postal:</strong> ${sanearParaEmail(validatedData.codigoPostal)}</p>
+                <h2>📍 UBICACIONES DE IMPRESIÓN</h2>
+                <div class="logo-positions">
+                  ${orderDetails.summary.positions.map(pos => `
+                    <div class="position-item">
+                      <strong>${pos.position}</strong><br>
+                      <span style="color: #E30613; font-weight: bold;">${pos.logo}</span>
+                    </div>
+                  `).join('')}
+                </div>
+                <p style="font-size: 12px; color: #666; margin-top: 15px;">
+                  ⚠️ <strong>IMPORTANTE:</strong> Cada posición requiere impresión individual según el diseño 3D del cliente.
+                </p>
               </div>
-              
+
+              <div class="address-section">
+                <h2>📮 DIRECCIÓN DE ENVÍO</h2>
+                <p><strong>👤 Cliente:</strong> ${sanearParaEmail(validatedData.nombre)}</p>
+                <p><strong>📧 Email:</strong> ${sanearParaEmail(validatedData.email)}</p>
+                <p><strong>📱 Teléfono:</strong> ${sanearParaEmail(validatedData.telefono)}</p>
+                <p><strong>🆔 ${validatedData.tipoDocumento}:</strong> ${sanearParaEmail(validatedData.numeroDocumento)}</p>
+                <hr style="margin: 15px 0; border: 1px solid #E30613;">
+                <p><strong>📍 Dirección Completa:</strong></p>
+                <p>${validatedData.tipoVia} ${sanearParaEmail(validatedData.direccion)}</p>
+                ${validatedData.otrosDatos ? `<p><em>Otros datos:</em> ${sanearParaEmail(validatedData.otrosDatos)}</p>` : ''}
+                <p>${sanearParaEmail(validatedData.codigoPostal)} ${sanearParaEmail(validatedData.poblacion)}</p>
+                <p>${sanearParaEmail(validatedData.provincia)}, ${sanearParaEmail(validatedData.pais)}</p>
+              </div>
+
               <div class="details">
-                <h2>Detalles del Producto</h2>
-                <p><strong>Talla:</strong> <span class="highlight">${validatedData.talla}</span></p>
-                <p><strong>Tipo:</strong> Camiseta Mahou Personalizada (GRATUITA)</p>
+                <h2>⏰ DATOS TÉCNICOS DEL PEDIDO</h2>
+                <p><strong>🕐 Timestamp:</strong> ${orderDetails.timestamp}</p>
+                <p><strong>🗂️ Modelo 3D:</strong> ${orderDetails.modelURL}</p>
+                <p><strong>🔢 Hash del Pedido:</strong> ${orderDetails.timestamp.slice(-8)}</p>
               </div>
-              
-              <div class="logo-info">
-                <h2>Personalización del Logo</h2>
-                <p><strong>Logo seleccionado:</strong> <span class="highlight">${validatedData.selectedLogo.toUpperCase()}</span></p>
-                <p><strong>Tamaño del logo:</strong> ${validatedData.logoSize}</p>
-                <p><strong>Ubicación:</strong> ${validatedData.logoPosition}</p>
-              </div>
-              
-              ${validatedData.comentarios ? `
-              <div class="details">
-                <h2>Comentarios del Cliente</h2>
-                <p><em>"${sanearParaEmail(validatedData.comentarios)}"</em></p>
-              </div>
-              ` : ''}
-              
-              <div class="details">
-                <h2>Diseño Personalizado</h2>
-                <p>El diseño personalizado se encuentra adjunto a este correo como imagen PNG de alta resolución.</p>
-                <p><em>Nombre del archivo: diseño-mahou-${validatedData.nombre.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.png</em></p>
-              </div>
-              
-              <div style="background-color: #FFF7ED; border: 1px solid #FFD700; padding: 15px; border-radius: 5px; margin: 15px 0;">
-                <h3 style="color: #8B4513; margin-top: 0;">⭐ Información del Pedido VIP</h3>
-                <ul style="color: #8B4513;">
-                  <li><strong>Producto GRATUITO</strong> - Promoción especial Mahou</li>
-                  <li>Entrega garantizada en 24-48 horas</li>
-                  <li>Logotipo oficial Mahou San Miguel</li>
-                  <li>Calidad premium con personalización 3D</li>
-                  <li>Producto exclusivo</li>
+
+              <div style="background-color: #FFF7ED; border: 2px solid #FFD700; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #8B4513; margin-top: 0;">⭐ INSTRUCCIONES VIP - MAHOU EXPERIENCE</h3>
+                <ul style="color: #8B4513; margin: 0;">
+                  <li><strong>✅ Producto GRATUITO</strong> - Promoción especial Mahou San Miguel</li>
+                  <li><strong>🚀 Entrega:</strong> 24-48 horas hábiles</li>
+                  <li><strong>🎯 Impresión:</strong> Logo oficial Mahou en posiciones especificadas</li>
+                  <li><strong>👕 Calidad:</strong> Camiseta premium con diseño 3D personalizado</li>
+                  <li><strong>📦 Proceso:</strong> Verificar cada posición de logo antes del envío</li>
+                  <li><strong>🏷️ Exclusivo:</strong> Producto único generado por configurador 3D</li>
                 </ul>
               </div>
-              
-              <div style="background-color: #dbeafe; border: 1px solid #3b82f6; padding: 15px; border-radius: 5px; margin: 15px 0;">
-                <h3 style="color: #1e40af; margin-top: 0;">⏰ Próximos Pasos</h3>
-                <ol style="color: #1e40af;">
-                  <li>Revisar el diseño y verificar la calidad de impresión</li>
-                  <li>Contactar al cliente para confirmar detalles de envío</li>
-                  <li>Proceder con la producción inmediata</li>
-                  <li>Coordinar entrega en 24-48 horas</li>
-                </ol>
+
+              <div style="text-align: center; padding: 20px; background: #f0f0f0; border-radius: 8px; margin-top: 20px;">
+                <p style="margin: 0; color: #666;">
+                  Este pedido fue generado automáticamente desde el configurador 3D de Mahou Experience<br>
+                  <strong>mahou-experience.com</strong> | Promoción válida hasta agotar stock
+                </p>
               </div>
-            </div>
-            
-            <div class="footer">
-              <p>Email generado automáticamente por el Sistema de Pedidos Mahou</p>
-              <p>Fecha: ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}</p>
             </div>
           </div>
         </body>
       </html>
     `;
 
-    // Generar nombre único para el archivo adjunto
-    const nombreArchivo = `diseño-mahou-${validatedData.nombre.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.png`;
-
-    // Enviar email usando Resend
-    const { data: responseData, error } = await resend.emails.send({
+    // Enviar email con los datos del pedido
+    const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: [direccionImpresion],
-      subject: `Nuevo Pedido Mahou: ${sanearParaEmail(validatedData.nombre)} - Talla ${validatedData.talla} - ${validatedData.logoPosition}`,
-      html: htmlBody,
-      attachments: [{
-        filename: nombreArchivo,
-        content: imageBuffer,
-        type: 'image/png'
-      }]
+      subject: `🎯 Nuevo Pedido Mahou: ${validatedData.nombre} - Talla ${orderDetails.size} - ${orderDetails.summary.totalLogos} logos`,
+      html: htmlBody
     });
 
     if (error) {
@@ -214,7 +206,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
       );
     }
 
-    console.log('Pedido enviado exitosamente:', responseData?.id);
+    console.log('Pedido enviado exitosamente:', data?.id);
     
     // Redirigir a página de éxito
     return redirect('/pedido-exitoso', 302);
@@ -224,10 +216,12 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     
     // Si es error de validación de Zod, dar detalles específicos
     if (error instanceof z.ZodError) {
+      console.error('❌ Error de validación Zod:', error.errors);
       const errores = error.errors.map(err => `${err.path.join('.')}: ${err.message}`).join(', ');
       return new Response(
         JSON.stringify({ 
-          message: `Datos inválidos: ${errores}` 
+          message: `Datos inválidos: ${errores}`,
+          details: error.errors // Incluir detalles completos para debugging
         }), 
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
