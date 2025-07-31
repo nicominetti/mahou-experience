@@ -1,0 +1,129 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import TShirtSleevesMaterials from "@/components/designer/TShirtSleevesMaterials-bkp.jsx";
+import type { AstroSeoProps } from "@astrolib/seo";
+
+const seo: AstroSeoProps = {
+	title: "Prueba de Materiales de Mangas - Estrategia 1",
+	description: "Demostración de la funcionalidad de logos en mangas usando modificación de materiales en Blender.",
+	canonical: "https://mahou.co/test-sleeves-materials/",
+};
+---
+
+<BaseLayout seo={seo}>
+	<section class="isolate px-6 py-24 sm:py-32 lg:px-8 min-h-[100vh]">
+		<div class="absolute inset-x-0 top-[-10rem] transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]" aria-hidden="true">
+			<div class="gradient-element"></div>
+		</div>
+		<div class="mx-auto">
+			<div class="text-center mb-10">
+				<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+					Prueba de Materiales de Mangas
+				</h1>
+				<p class="mt-6 text-lg leading-8 text-gray-600">
+					Estrategia 1: Modificación de Materiales en Blender
+				</p>
+			</div>
+			
+			<!-- Información de la estrategia -->
+			<div class="mx-auto max-w-4xl mb-8">
+				<div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
+					<h3 class="text-lg font-semibold text-blue-800 mb-2">
+						📋 Estrategia 1: Modificación de Materiales
+					</h3>
+					<div class="text-sm text-blue-700 space-y-2">
+						<p><strong>¿Qué hace este código?</strong></p>
+						<ul class="list-disc list-inside space-y-1 ml-4">
+							<li>Carga el archivo <code>tshirt_mangas.glb</code> modificado en Blender</li>
+							<li>Busca materiales específicos: <code>material_manga_izquierda</code> y <code>material_manga_derecha</code></li>
+							<li>Almacena referencias a estos materiales en el objeto <code>sleeveMaterials</code></li>
+							<li>Permite aplicar texturas cambiando la propiedad <code>.map</code> de los materiales</li>
+						</ul>
+						<p><strong>Requisitos:</strong></p>
+						<ul class="list-disc list-inside space-y-1 ml-4">
+							<li>El archivo GLB debe tener los materiales nombrados exactamente como se especifica</li>
+							<li>Los materiales deben estar asignados a las geometrías correspondientes de las mangas</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Componente de demostración -->
+			<div class="mx-auto max-w-8xl pt-8">
+				<TShirtSleevesMaterials client:load />
+			</div>
+			
+			<!-- Instrucciones de uso -->
+			<div class="mx-auto max-w-4xl mt-8">
+				<div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-lg">
+					<h3 class="text-lg font-semibold text-green-800 mb-2">
+						🚀 Instrucciones de Uso
+					</h3>
+					<div class="text-sm text-green-700 space-y-2">
+						<ol class="list-decimal list-inside space-y-1">
+							<li>Observa el <strong>Estado de Materiales</strong> en el panel derecho</li>
+							<li>Verifica que ambas mangas aparezcan como "✅ Encontrado"</li>
+							<li>Modifica la URL de la textura si deseas usar un logo diferente</li>
+							<li>Haz clic en <strong>"🖼️ Aplicar Logo"</strong> para aplicar la textura a las mangas</li>
+							<li>Usa <strong>"🗑️ Remover"</strong> para quitar el logo</li>
+						</ol>
+						<p class="mt-4"><strong>Archivos de prueba disponibles:</strong></p>
+						<ul class="list-disc list-inside space-y-1 ml-4">
+							<li><code>/textures/mahou-logo.png</code> (logo Mahou principal)</li>
+							<li><code>/textures/mahou-logo-gray.png</code> (logo Mahou en gris)</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Información técnica -->}
+			<div class="mx-auto max-w-4xl mt-8">
+				<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+					<h3 class="text-lg font-semibold text-gray-800 mb-2">
+						🔧 Información Técnica
+					</h3>
+					<div class="text-sm text-gray-600 space-y-2">
+						<p><strong>Funciones principales exportadas:</strong></p>
+						<ul class="list-disc list-inside space-y-1 ml-4 font-mono text-xs">
+							<li><code>aplicarLogoAMangas(textureUrl)</code> - Aplica textura a ambas mangas</li>
+							<li><code>removerLogoDeMangas()</code> - Remueve texturas de las mangas</li>
+						</ul>
+						<p><strong>Estado global disponible:</strong></p>
+						<ul class="list-disc list-inside space-y-1 ml-4 font-mono text-xs">
+							<li><code>sleeveState.sleeveMaterials.left</code> - Material manga izquierda</li>
+							<li><code>sleeveState.sleeveMaterials.right</code> - Material manga derecha</li>
+							<li><code>sleeveState.materialsFound</code> - Boolean si se encontraron materiales</li>
+						</ul>
+						<p class="mt-2">
+							<strong>💡 Tip:</strong> Abre la consola del navegador (F12) para ver logs detallados del proceso de carga y búsqueda de materiales.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.gradient-element {
+		@apply relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem];
+		clip-path: polygon(
+			74.1% 44.1%,
+			100% 61.6%,
+			97.5% 26.9%,
+			85.5% 0.1%,
+			80.7% 2%,
+			72.5% 32.5%,
+			60.2% 62.4%,
+			52.4% 68.1%,
+			47.5% 58.3%,
+			45.2% 34.5%,
+			27.5% 76.7%,
+			0.1% 64.9%,
+			17.9% 100%,
+			27.6% 76.8%,
+			76.1% 97.7%,
+			74.1% 44.1%
+		);
+	}
+</style>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia 1: Materiales de Mangas - Ejemplo Simple</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .canvas-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        #threejs-canvas {
+            width: 100%;
+            height: 500px;
+            border-radius: 10px;
+            background: #222;
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .control-group input, .control-group button, .control-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .control-group button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background 0.3s;
+        }
+        
+        .control-group button:hover {
+            background: #45a049;
+        }
+        
+        .control-group button:disabled {
+            background: #888;
+            cursor: not-allowed;
+        }
+        
+        .control-group button.danger {
+            background: #f44336;
+        }
+        
+        .control-group button.danger:hover {
+            background: #da190b;
+        }
+        
+        .status {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .status.error {
+            border-left: 4px solid #f44336;
+        }
+        
+        .status.warning {
+            border-left: 4px solid #ff9800;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .log {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Estrategia 1: Modificación de Materiales</h1>
+            <p>Demostración de aplicación de logos en mangas usando materiales específicos de Blender</p>
+        </div>
+        
+        <div class="grid">
+            <div class="canvas-container">
+                <h3>Vista 3D del Modelo</h3>
+                <canvas id="threejs-canvas"></canvas>
+            </div>
+            
+            <div class="controls">
+                <h3>🎮 Controles</h3>
+                
+                <div id="status" class="status">
+                    📊 Estado: Inicializando...
+                </div>
+                
+                <div class="control-group">
+                    <label>📁 Archivo del Modelo:</label>
+                    <input type="text" id="model-path" value="/models/tshirt_mangas.glb">
+                </div>
+                
+                <div class="control-group">
+                    <button id="load-model">🔄 Cargar Modelo y Buscar Materiales</button>
+                </div>
+                
+                <div class="control-group">
+                    <label>🖼️ URL de la Textura:</label>
+                    <select id="texture-select">
+                        <option value="/textures/mahou-logo.png">Logo Mahou (Rojo)</option>
+                        <option value="/textures/mahou-logo-gray.png">Logo Mahou (Gris)</option>
+                        <option value="custom">Personalizada...</option>
+                    </select>
+                    <input type="text" id="custom-texture" placeholder="URL personalizada..." style="display: none; margin-top: 10px;">
+                </div>
+                
+                <div class="control-group">
+                    <button id="apply-texture" disabled>🎨 Aplicar Textura a Mangas</button>
+                    <button id="remove-texture" class="danger" disabled>🗑️ Remover Textura</button>
+                </div>
+                
+                <div class="control-group">
+                    <button id="analyze-model">🔍 Analizar Modelo Completo</button>
+                </div>
+                
+                <div class="log" id="console-log">
+📋 Consola de registro:
+Esperando acciones del usuario...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/OrbitControls.js"></script>
+
+    <script>
+        // Variables globales
+        let scene, camera, renderer, controls;
+        let currentModel = null;
+        let sleeveMaterials = { left: null, right: null };
+        let materialsFound = false;
+        let currentTexture = null;
+
+        // Elementos del DOM
+        const canvas = document.getElementById('threejs-canvas');
+        const statusEl = document.getElementById('status');
+        const logEl = document.getElementById('console-log');
+        const modelPathInput = document.getElementById('model-path');
+        const textureSelect = document.getElementById('texture-select');
+        const customTextureInput = document.getElementById('custom-texture');
+        const loadModelBtn = document.getElementById('load-model');
+        const applyTextureBtn = document.getElementById('apply-texture');
+        const removeTextureBtn = document.getElementById('remove-texture');
+        const analyzeModelBtn = document.getElementById('analyze-model');
+
+        // Función para escribir en el log
+        function writeLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logEl.textContent += `\n[${timestamp}] ${prefix} ${message}`;
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(message);
+        }
+
+        // Función para actualizar el estado
+        function updateStatus(message, type = 'info') {
+            statusEl.textContent = `📊 ${message}`;
+            statusEl.className = `status ${type}`;
+            writeLog(message, type);
+        }
+
+        // Inicializar Three.js
+        function initThreeJS() {
+            // Crear escena
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x222222);
+
+            // Crear cámara
+            camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            camera.position.set(0, 0, 3);
+
+            // Crear renderer
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            // Agregar luces
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            // Controles de órbita
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            // Función de animación
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            writeLog('Three.js inicializado correctamente', 'success');
+        }
+
+        // Cargar modelo y buscar materiales
+        async function loadModelAndFindMaterials() {
+            const modelPath = modelPathInput.value;
+            updateStatus('Cargando modelo...', 'warning');
+            
+            loadModelBtn.disabled = true;
+            sleeveMaterials = { left: null, right: null };
+            materialsFound = false;
+
+            try {
+                const loader = new THREE.GLTFLoader();
+                
+                const gltf = await new Promise((resolve, reject) => {
+                    loader.load(
+                        modelPath,
+                        resolve,
+                        (progress) => {
+                            const percent = Math.round((progress.loaded / progress.total) * 100);
+                            updateStatus(`Cargando modelo... ${percent}%`, 'warning');
+                        },
+                        reject
+                    );
+                });
+
+                writeLog('Modelo cargado exitosamente', 'success');
+
+                // Remover modelo anterior si existe
+                if (currentModel) {
+                    scene.remove(currentModel);
+                }
+
+                // Agregar nuevo modelo
+                currentModel = gltf.scene;
+                scene.add(currentModel);
+
+                // Centrar el modelo
+                const box = new THREE.Box3().setFromObject(currentModel);
+                const center = box.getCenter(new THREE.Vector3());
+                currentModel.position.sub(center);
+
+                // Ajustar cámara
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                camera.position.z = maxDim * 2;
+
+                writeLog('Iniciando búsqueda de materiales de mangas...', 'info');
+
+                // Buscar materiales de mangas
+                findSleeveMaterials(gltf);
+
+            } catch (error) {
+                writeLog(`Error al cargar el modelo: ${error.message}`, 'error');
+                updateStatus('Error al cargar el modelo', 'error');
+            } finally {
+                loadModelBtn.disabled = false;
+            }
+        }
+
+        // Buscar materiales de mangas
+        function findSleeveMaterials(gltf) {
+            let leftFound = false;
+            let rightFound = false;
+            const allMaterials = [];
+
+            // Buscar en gltf.materials
+            if (gltf.materials) {
+                writeLog(`Encontrados ${gltf.materials.length} materiales en gltf.materials`, 'info');
+                
+                gltf.materials.forEach((material, index) => {
+                    const name = material.name || `material_${index}`;
+                    allMaterials.push(name);
+                    writeLog(`Material ${index}: "${name}"`, 'info');
+
+                    if (name === 'material_manga_izquierda') {
+                        sleeveMaterials.left = material;
+                        leftFound = true;
+                        writeLog('¡Material de manga izquierda encontrado!', 'success');
+                    }
+
+                    if (name === 'material_manga_derecha') {
+                        sleeveMaterials.right = material;
+                        rightFound = true;
+                        writeLog('¡Material de manga derecha encontrado!', 'success');
+                    }
+                });
+            }
+
+            // Buscar con traverse
+            writeLog('Recorriendo escena con traverse...', 'info');
+            let meshCount = 0;
+
+            gltf.scene.traverse((child) => {
+                if (child.isMesh) {
+                    meshCount++;
+                    writeLog(`Malla ${meshCount}: "${child.name}"`, 'info');
+
+                    if (child.material) {
+                        const materials = Array.isArray(child.material) ? child.material : [child.material];
+                        
+                        materials.forEach((material, index) => {
+                            const name = material.name || `unnamed_${index}`;
+                            
+                            if (!allMaterials.includes(name)) {
+                                allMaterials.push(name);
+                            }
+
+                            if (name === 'material_manga_izquierda' && !leftFound) {
+                                sleeveMaterials.left = material;
+                                leftFound = true;
+                                writeLog('¡Material de manga izquierda encontrado en traverse!', 'success');
+                            }
+
+                            if (name === 'material_manga_derecha' && !rightFound) {
+                                sleeveMaterials.right = material;
+                                rightFound = true;
+                                writeLog('¡Material de manga derecha encontrado en traverse!', 'success');
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Verificar resultados
+            materialsFound = leftFound && rightFound;
+
+            writeLog(`Mallas analizadas: ${meshCount}`, 'info');
+            writeLog(`Materiales únicos encontrados: ${allMaterials.length}`, 'info');
+            writeLog(`Manga izquierda: ${leftFound ? 'Encontrado' : 'No encontrado'}`, leftFound ? 'success' : 'error');
+            writeLog(`Manga derecha: ${rightFound ? 'Encontrado' : 'No encontrado'}`, rightFound ? 'success' : 'error');
+
+            if (materialsFound) {
+                updateStatus('✅ Materiales de mangas encontrados - Listo para aplicar texturas', 'success');
+                applyTextureBtn.disabled = false;
+            } else {
+                updateStatus('❌ No se encontraron todos los materiales necesarios', 'error');
+                writeLog('Materiales disponibles en el modelo:', 'warning');
+                allMaterials.forEach(name => writeLog(`  - "${name}"`, 'warning'));
+            }
+        }
+
+        // Aplicar textura a las mangas
+        async function applyTexture() {
+            if (!materialsFound) {
+                writeLog('No se pueden aplicar texturas: materiales no encontrados', 'error');
+                return;
+            }
+
+            const textureUrl = textureSelect.value === 'custom' ? customTextureInput.value : textureSelect.value;
+            
+            if (!textureUrl) {
+                writeLog('URL de textura no válida', 'error');
+                return;
+            }
+
+            updateStatus('Aplicando textura...', 'warning');
+            applyTextureBtn.disabled = true;
+
+            try {
+                writeLog(`Cargando textura desde: ${textureUrl}`, 'info');
+
+                const textureLoader = new THREE.TextureLoader();
+                const texture = await new Promise((resolve, reject) => {
+                    textureLoader.load(textureUrl, resolve, undefined, reject);
+                });
+
+                // Configurar textura
+                texture.colorSpace = THREE.SRGBColorSpace;
+                texture.flipY = false;
+                texture.wrapS = THREE.ClampToEdgeWrapping;
+                texture.wrapT = THREE.ClampToEdgeWrapping;
+
+                // Aplicar a ambas mangas
+                sleeveMaterials.left.map = texture;
+                sleeveMaterials.right.map = texture;
+                sleeveMaterials.left.needsUpdate = true;
+                sleeveMaterials.right.needsUpdate = true;
+
+                currentTexture = texture;
+
+                writeLog('Textura aplicada exitosamente a ambas mangas', 'success');
+                writeLog(`Dimensiones: ${texture.image.width}x${texture.image.height}`, 'info');
+                
+                updateStatus('✅ Textura aplicada exitosamente', 'success');
+                removeTextureBtn.disabled = false;
+
+            } catch (error) {
+                writeLog(`Error al cargar la textura: ${error.message}`, 'error');
+                updateStatus('❌ Error al aplicar textura', 'error');
+            } finally {
+                applyTextureBtn.disabled = false;
+            }
+        }
+
+        // Remover textura
+        function removeTexture() {
+            if (!materialsFound || !currentTexture) {
+                writeLog('No hay textura para remover', 'warning');
+                return;
+            }
+
+            writeLog('Removiendo textura de las mangas...', 'info');
+
+            sleeveMaterials.left.map = null;
+            sleeveMaterials.right.map = null;
+            sleeveMaterials.left.needsUpdate = true;
+            sleeveMaterials.right.needsUpdate = true;
+
+            currentTexture = null;
+
+            writeLog('Textura removida exitosamente', 'success');
+            updateStatus('✅ Textura removida', 'success');
+            removeTextureBtn.disabled = true;
+        }
+
+        // Analizar modelo completo
+        function analyzeModel() {
+            writeLog('=== ANÁLISIS COMPLETO DEL MODELO ===', 'info');
+            writeLog(`Modelo cargado: ${currentModel ? 'Sí' : 'No'}`, 'info');
+            writeLog(`Materiales encontrados: ${materialsFound ? 'Sí' : 'No'}`, 'info');
+            writeLog(`Textura aplicada: ${currentTexture ? 'Sí' : 'No'}`, 'info');
+            
+            if (sleeveMaterials.left) {
+                writeLog(`Material manga izquierda: ${sleeveMaterials.left.name || 'Sin nombre'}`, 'info');
+            }
+            
+            if (sleeveMaterials.right) {
+                writeLog(`Material manga derecha: ${sleeveMaterials.right.name || 'Sin nombre'}`, 'info');
+            }
+            
+            writeLog('=== FIN DEL ANÁLISIS ===', 'info');
+        }
+
+        // Event listeners
+        loadModelBtn.addEventListener('click', loadModelAndFindMaterials);
+        applyTextureBtn.addEventListener('click', applyTexture);
+        removeTextureBtn.addEventListener('click', removeTexture);
+        analyzeModelBtn.addEventListener('click', analyzeModel);
+
+        textureSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'custom') {
+                customTextureInput.style.display = 'block';
+            } else {
+                customTextureInput.style.display = 'none';
+            }
+        });
+
+        // Manejar redimensionamiento
+        window.addEventListener('resize', () => {
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        });
+
+        // Inicializar al cargar la página
+        window.addEventListener('load', () => {
+            initThreeJS();
+            updateStatus('Sistema inicializado - Listo para cargar modelo', 'success');
+        });
+    </script>
+</body>
+</html>
