@@ -20,23 +20,23 @@
         <body>
           <div class="container">
             <div class="header">
-              <h1>🎯 Nuevo Pedido Camiseta Mahou Personalizada</h1>
+              <h1>Nuevo Pedido Camiseta Mahou Personalizada</h1>
               <p>Pedido recibido: ${new Date().toLocaleString('es-ES')}</p>
             </div>
             
             <div class="content">
               <div class="product-summary">
-                <h2>📦 Resumen del Producto</h2>
-                <p><strong>🎽 Camiseta Mahou Personalizada</strong> - <span style="background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 15px;">GRATUITA</span></p>
-                <p><strong>👔 Talla:</strong> ${orderDetails.size}</p>
-                <p><strong>👤 Género:</strong> ${orderDetails.gender === 'masculino' ? 'Masculino' : orderDetails.gender === 'femenino' ? 'Femenino' : 'Unisex'}</p>
-                <p><strong>🎨 Color:</strong> <span style="display: inline-block; width: 20px; height: 20px; background-color: ${orderDetails.color.hex}; border: 1px solid white; border-radius: 50%; vertical-align: middle;"></span> ${orderDetails.color.hex}</p>
-                <p><strong>🏷️ Total Logos:</strong> ${orderDetails.summary.totalLogos}</p>
-                <p><strong>📏 Tamaño Logos:</strong> ${['Pequeño', 'Medio', 'Grande'][orderDetails.logoSize]}</p>
+                <h2>Resumen del Producto</h2>
+                <p><strong>Camiseta Mahou Personalizada</strong> - <span style="background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 15px;">GRATUITA</span></p>
+                <p><strong>Talla:</strong> ${orderDetails.size}</p>
+                <p><strong>Género:</strong> ${orderDetails.gender === 'masculino' ? 'Masculino' : orderDetails.gender === 'femenino' ? 'Femenino' : 'Unisex'}</p>
+                <p><strong>Color:</strong> <span style="display: inline-block; width: 20px; height: 20px; background-color: ${orderDetails.color.hex}; border: 1px solid white; border-radius: 50%; vertical-align: middle;"></span> ${orderDetails.color.hex}</p>
+                <p><strong>Total Logos:</strong> ${orderDetails.summary.totalLogos}</p>
+                <p><strong>Tamaño Logos:</strong> ${['Pequeño', 'Medio', 'Grande'][orderDetails.logoSize]}</p>
               </div>
 
               <div class="details">
-                <h2>📍 UBICACIONES DE IMPRESIÓN</h2>
+                <h2>UBICACIONES DE IMPRESIÓN</h2>
                 <div class="logo-positions">
                   ${orderDetails.summary.positions.map(pos => `
                     <div class="position-item">
@@ -46,18 +46,18 @@
                   `).join('')}
                 </div>
                 <p style="font-size: 12px; color: #666; margin-top: 15px;">
-                  ⚠️ <strong>IMPORTANTE:</strong> Cada posición requiere impresión individual según el diseño 3D del cliente.
+                  <strong>IMPORTANTE:</strong> Cada posición requiere impresión individual según el diseño 3D del cliente.
                 </p>
               </div>
 
               <div class="address-section">
-                <h2>📮 DIRECCIÓN DE ENVÍO</h2>
-                <p><strong>👤 Cliente:</strong> ${validatedData.nombre}</p>
-                <p><strong>📧 Email:</strong> ${validatedData.email}</p>
-                <p><strong>📱 Teléfono:</strong> ${validatedData.telefono}</p>
-                <p><strong>🆔 ${validatedData.tipoDocumento}:</strong> ${validatedData.numeroDocumento}</p>
+                <h2>DIRECCIÓN DE ENVÍO</h2>
+                <p><strong>Cliente:</strong> ${validatedData.nombre}</p>
+                <p><strong>Email:</strong> ${validatedData.email}</p>
+                <p><strong>Teléfono:</strong> ${validatedData.telefono}</p>
+                <p><strong>${validatedData.tipoDocumento}:</strong> ${validatedData.numeroDocumento}</p>
                 <hr style="margin: 15px 0; border: 1px solid #E30613;">
-                <p><strong>📍 Dirección Completa:</strong></p>
+                <p><strong>Dirección Completa:</strong></p>
                 <p>${validatedData.tipoVia} ${validatedData.direccion}</p>
                 ${validatedData.otrosDatos ? `<p><em>Otros datos:</em> ${validatedData.otrosDatos}</p>` : ''}
                 <p>${validatedData.codigoPostal} ${validatedData.poblacion}</p>
@@ -65,21 +65,21 @@
               </div>
 
               <div class="details">
-                <h2>⏰ DATOS TÉCNICOS DEL PEDIDO</h2>
-                <p><strong>🕐 Timestamp:</strong> ${orderDetails.timestamp}</p>
-                <p><strong>🗂️ Modelo 3D:</strong> ${orderDetails.modelURL}</p>
-                <p><strong>🔢 Hash del Pedido:</strong> ${orderDetails.timestamp.slice(-8)}</p>
+                <h2>DATOS TÉCNICOS DEL PEDIDO</h2>
+                <p><strong>Timestamp:</strong> ${orderDetails.timestamp}</p>
+                <p><strong>Modelo 3D:</strong> ${orderDetails.modelURL}</p>
+                <p><strong>Hash del Pedido:</strong> ${orderDetails.timestamp.slice(-8)}</p>
               </div>
 
               <div style="background-color: #FFF7ED; border: 2px solid #FFD700; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3 style="color: #8B4513; margin-top: 0;">⭐ INSTRUCCIONES VIP - MAHOU EXPERIENCE</h3>
+                <h3 style="color: #8B4513; margin-top: 0;">INSTRUCCIONES VIP - MAHOU EXPERIENCE</h3>
                 <ul style="color: #8B4513; margin: 0;">
-                  <li><strong>✅ Producto GRATUITO</strong> - Promoción especial Mahou San Miguel</li>
-                  <li><strong>🚀 Entrega:</strong> 24-48 horas hábiles</li>
-                  <li><strong>🎯 Impresión:</strong> Logo oficial Mahou en posiciones especificadas</li>
-                  <li><strong>👕 Calidad:</strong> Camiseta premium con diseño 3D personalizado</li>
-                  <li><strong>📦 Proceso:</strong> Verificar cada posición de logo antes del envío</li>
-                  <li><strong>🏷️ Exclusivo:</strong> Producto único generado por configurador 3D</li>
+                  <li><strong>Producto GRATUITO</strong> - Promoción especial Mahou San Miguel</li>
+                  <li><strong>Entrega:</strong> 24-48 horas hábiles</li>
+                  <li><strong>Impresión:</strong> Logo oficial Mahou en posiciones especificadas</li>
+                  <li><strong>Calidad:</strong> Camiseta premium con diseño 3D personalizado</li>
+                  <li><strong>Proceso:</strong> Verificar cada posición de logo antes del envío</li>
+                  <li><strong>Exclusivo:</strong> Producto único generado por configurador 3D</li>
                 </ul>
               </div>
 

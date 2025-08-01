@@ -338,7 +338,7 @@ export default function ModelAnalyzer() {
         {/* Ajustes de posición de mangas */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            🎯 Ajustar Posiciones de Mangas
+            Ajustar Posiciones de Mangas
           </h3>
           
           <div className="space-y-4">
@@ -456,7 +456,7 @@ export default function ModelAnalyzer() {
         {currentAnalysis && (
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              📊 Análisis del Modelo
+              Análisis del Modelo
             </h3>
             
             <div className="space-y-4">

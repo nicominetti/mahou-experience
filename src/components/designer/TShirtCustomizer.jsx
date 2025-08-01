@@ -51,11 +51,11 @@ const state = proxy({
     }
   ],
   availablePositions: [
-    { id: 'frente', name: 'Frente', icon: '🎯', camera: { position: [0, 0, 3], target: [0, 0, 0] } },
-    { id: 'pecho', name: 'Pecho', icon: '💚', camera: { position: [0, 0.5, 2.5], target: [0, 0, 0] } },
-    { id: 'espalda', name: 'Espalda', icon: '🔄', camera: { position: [0, 0, -3], target: [0, 0, 0] } },
-    { id: 'manga_izquierda', name: 'Manga Izquierda', icon: '👈', camera: { position: [3, 0, 0], target: [0, 0, 0] } },
-    { id: 'manga_derecha', name: 'Manga Derecha', icon: '👉', camera: { position: [-3, 0, 0], target: [0, 0, 0] } }
+    { id: 'frente', name: 'Frente', camera: { position: [0, 0, 3], target: [0, 0, 0] } },
+    { id: 'pecho', name: 'Pecho', camera: { position: [0, 0.5, 2.5], target: [0, 0, 0] } },
+    { id: 'espalda', name: 'Espalda', camera: { position: [0, 0, -3], target: [0, 0, 0] } },
+    { id: 'manga_izquierda', name: 'Manga Izquierda', camera: { position: [3, 0, 0], target: [0, 0, 0] } },
+    { id: 'manga_derecha', name: 'Manga Derecha', camera: { position: [-3, 0, 0], target: [0, 0, 0] } }
   ]
 });
 
@@ -426,26 +426,9 @@ function ControlPanel() {
   
   return (
     <div className="space-y-6">
-      {/* 1. SELECTOR DE LOGO (PRIMERO) */}
-      <div>
-        <h4 className="text-sm font-semibold text-gray-900 mb-3">Seleccionar Logo</h4>
-        <LogoSelector />
-      </div>
 
-      {/* 2. POSICIÓN DEL LOGO (SEGUNDO) */}
-      <div>        
-        <PositionSelector />
-      </div>
-
-      {/* 3. BOTÓN APLICAR (aparece solo si hay logo y posición seleccionados) */}
-      {snap.selectedLogo && snap.selectedPosition && (
+        {/* 1. TALLA (SELECT ESTILO CHECKOUT) */}
         <div>
-          <ApplyLogoButton />
-        </div>
-      )}
-
-      {/* 4. TALLA (SELECT ESTILO CHECKOUT) */}
-      <div>
         <h4 className="text-sm font-semibold text-gray-900 mb-2">Talla</h4>
         <select
           value={snap.selectedSize}
@@ -461,7 +444,7 @@ function ControlPanel() {
         </select>
       </div>
 
-      {/* 5. GÉNERO (SELECT ESTILO CHECKOUT) */}
+      {/* 2. GÉNERO (SELECT ESTILO CHECKOUT) */}
       <div>
         <h4 className="text-sm font-semibold text-gray-900 mb-2">Género</h4>
         <select
@@ -469,11 +452,29 @@ function ControlPanel() {
           onChange={(e) => { state.selectedGender = e.target.value; }}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
-          <option value="masculino">👨 Masculino</option>
-          <option value="femenino">👩 Femenino</option>
-          <option value="unisex">👤 Unisex</option>
+          <option value="masculino">Masculino</option>
+          <option value="femenino">Femenino</option>
+          <option value="unisex">Unisex</option>
         </select>
       </div>
+
+      {/* 3. SELECTOR DE LOGO (PRIMERO) */}
+      <div>
+        <h4 className="text-sm font-semibold text-gray-900 mb-3">Seleccionar Logo</h4>
+        <LogoSelector />
+      </div>
+
+      {/* 4. POSICIÓN DEL LOGO (SEGUNDO) */}
+      <div>        
+        <PositionSelector />
+      </div>
+
+      {/* 5. BOTÓN APLICAR (aparece solo si hay logo y posición seleccionados) */}
+      {snap.selectedLogo && snap.selectedPosition && (
+        <div>
+          <ApplyLogoButton />
+        </div>
+      )}      
 
       {/* 6. ESTADO DEL DISEÑO (AL FINAL) */}
       <div className="border-t pt-4">
@@ -503,7 +504,7 @@ function ControlPanel() {
               const positionName = state.availablePositions.find(p => p.id === position)?.name;
               return (
                 <div key={position} className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">📍 {positionName}:</span>
+                  <span className="text-gray-600">{positionName}:</span>
                   <span className="font-medium text-green-600">{logo.name}</span>
                 </div>
               );

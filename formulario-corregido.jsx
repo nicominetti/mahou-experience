@@ -13,18 +13,17 @@
               
               {/* Información del diseño */}
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
-                <h3 className="font-semibold text-green-800 mb-2 flex items-center">
-                  <span className="mr-2">🎯</span>
+                <h3 className="font-semibold text-green-800 mb-2 flex items-center">                  
                   Tu Diseño 3D Personalizado
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4 text-sm text-green-700">
                   <ul className="space-y-1">
-                    <li>✨ Renderizado 3D real con React Three Fiber</li>
-                    <li>🎨 Logos aplicados dinámicamente</li>
+                    <li>Renderizado 3D real con React Three Fiber</li>
+                    <li>Logos aplicados dinámicamente</li>
                   </ul>
                   <ul className="space-y-1">
-                    <li>📐 Posicionamiento preciso</li>
-                    <li>💾 Datos exportables para producción</li>
+                    <li>Posicionamiento preciso</li>
+                    <li>atos exportables para producción</li>
                   </ul>
                 </div>
                 <div className="mt-3 p-3 bg-white rounded border">
@@ -40,7 +39,7 @@
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    👤 Nombre completo *
+                    Nombre completo *
                   </label>
                   <input
                     type="text"
@@ -53,7 +52,7 @@
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    📧 Email *
+                    Email *
                   </label>
                   <input
                     type="email"
@@ -66,7 +65,7 @@
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    📞 Teléfono *
+                    Teléfono *
                   </label>
                   <input
                     type="tel"
@@ -79,7 +78,7 @@
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    🏠 Dirección *
+                    Dirección *
                   </label>
                   <input
                     type="text"
@@ -92,7 +91,7 @@
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    🏙️ Ciudad *
+                    Ciudad *
                   </label>
                   <input
                     type="text"
@@ -105,7 +104,7 @@
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    📮 Código Postal *
+                    Código Postal *
                   </label>
                   <input
                     type="text"
@@ -120,7 +119,7 @@
               {/* Comentarios adicionales */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  💬 Comentarios adicionales (opcional)
+                  Comentarios adicionales (opcional)
                 </label>
                 <textarea
                   name="comentarios"
@@ -143,28 +142,24 @@
                   type="submit"
                   className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 px-6 rounded-lg text-xl font-bold hover:from-red-700 hover:to-red-800 transition-all transform hover:scale-105 focus:ring-4 focus:ring-red-500 focus:ring-offset-2 shadow-lg"
                 >
-                  🚀 REALIZAR PEDIDO CON DISEÑO 3D
+                  REALIZAR PEDIDO CON DISEÑO 3D
                 </button>
                 
                 {/* Garantías */}
                 <div className="mt-4 text-center">
                   <div className="flex justify-center items-center space-x-6 text-sm text-gray-600">
-                    <div className="flex items-center">
-                      <span className="mr-1">🔒</span>
+                    <div className="flex items-center">                      
                       <span>Datos seguros</span>
                     </div>
-                    <div className="flex items-center">
-                      <span className="mr-1">⚛️</span>
+                    <div className="flex items-center">                      
                       <span>Tecnología 3D</span>
                     </div>
-                    <div className="flex items-center">
-                      <span className="mr-1">📞</span>
+                    <div className="flex items-center">                      
                       <span>Soporte 24/7</span>
                     </div>
                   </div>
                 </div>
-              </div>
-              
+              </div>              
             </form>
           </div>
         </div>

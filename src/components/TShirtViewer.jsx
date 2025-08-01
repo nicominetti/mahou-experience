@@ -69,10 +69,10 @@ function ModelInfo() {
             const { scene, materials, animations } = gltf;
             let infoText = '';
             
-            infoText += `📊 INFORMACIÓN DEL MODELO\n`;
+            infoText += `INFORMACIÓN DEL MODELO\n`;
             infoText += `━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-            infoText += `🎯 Materiales: ${Object.keys(materials).length}\n`;
-            infoText += `🎬 Animaciones: ${animations.length}\n`;
+            infoText += `Materiales: ${Object.keys(materials).length}\n`;
+            infoText += `Animaciones: ${animations.length}\n`;
             
             // Contar vértices y triángulos
             let vertices = 0;
@@ -90,10 +90,10 @@ function ModelInfo() {
                 }
             });
             
-            infoText += `🔺 Triángulos: ${Math.round(triangles).toLocaleString()}\n`;
-            infoText += `📍 Vértices: ${vertices.toLocaleString()}\n\n`;
+            infoText += `Triángulos: ${Math.round(triangles).toLocaleString()}\n`;
+            infoText += `Vértices: ${vertices.toLocaleString()}\n\n`;
             
-            infoText += `🎨 MATERIALES DETECTADOS:\n`;
+            infoText += `MATERIALES DETECTADOS:\n`;
             infoText += `━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
             
             Object.entries(materials).forEach(([name, material]) => {
