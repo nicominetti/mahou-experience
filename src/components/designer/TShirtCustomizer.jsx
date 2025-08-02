@@ -126,10 +126,14 @@ function TShirtWithSleeves(props) {
     const meshes = [];
     Object.entries(nodes).forEach(([name, node]) => {
       if (node.geometry && node.geometry.attributes) {
+        // ✅ Recalcular normales para eliminar ondulaciones
+        const geometry = node.geometry.clone();
+        geometry.computeVertexNormals();
+        
         meshes.push({
           name,
           node,
-          geometry: node.geometry,
+          geometry: geometry, // Usar geometría con normales recalculadas
           material: node.material
         });
       }
@@ -148,16 +152,25 @@ function TShirtWithSleeves(props) {
   }
   
   return (
+   
     <group ref={meshRef} scale={[1, 1, 1]} position={[0, -1, 0]} {...props}>
       {modelAnalysis.map((meshData, index) => (
         <mesh 
           key={`mesh-${index}-${meshData.name}`}
-          geometry={meshData.node.geometry}
+          geometry={meshData.geometry}  // ✅ Usar geometría con normales recalculadas
+          castShadow={true}        
+          receiveShadow={true}     
           material={meshData.material || new THREE.MeshStandardMaterial({
             color: new THREE.Color(snap.color.r / 255, snap.color.g / 255, snap.color.b / 255),
-            roughness: 0.8,
-            metalness: 0.1,
-            side: THREE.DoubleSide
+            roughness: 0.9,        // ✅ Muy rugoso = menos reflejos circulares
+            metalness: 0.0,        
+            side: THREE.DoubleSide,
+            transparent: false,
+            opacity: 1.0,
+            // ✅ ANTI-ONDULACIONES
+            flatShading: true,             // ✅ CLAVE: Elimina interpolación suave
+            vertexColors: false,           
+            fog: true                      
           })}
         >
           {/* Renderizar decals para todas las posiciones */}
@@ -243,18 +256,45 @@ function Scene() {
       gl={{ 
         antialias: true, 
         alpha: true,
-        powerPreference: "high-performance"
+        powerPreference: "high-performance",
+        shadowMap: {
+          enabled: true,
+          type: THREE.PCFSoftShadowMap  // Sombras suaves
+        }
       }}
+      shadows={true}  // ✅ Habilitar sombras en el canvas
       style={{ background: 'transparent' }}
     >
-      <ambientLight intensity={0.7} />
-      <directionalLight 
-        position={[5, 5, 5]} 
-        intensity={0.8} 
-        castShadow
+      {/* 💡 ILUMINACIÓN BALANCEADA: Uniforme pero con efecto 3D */}
+      <ambientLight intensity={0.4} />
+      <hemisphereLight 
+        skyColor="#ffffff" 
+        groundColor="#888888" 
+        intensity={0.6} 
       />
-      <directionalLight position={[-5, 5, 5]} intensity={0.4} />
-      <pointLight position={[0, -5, 2]} intensity={0.3} />
+      {/* Luz principal con sombras para efecto 3D */}
+      <directionalLight 
+        position={[5, 10, 5]} 
+        intensity={1.0} 
+        castShadow={true}
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-near={0.5}
+        shadow-camera-far={50}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+      />
+      {/* Luces de relleno suaves desde otros ángulos */}
+      <directionalLight position={[-5, 5, 5]} intensity={0.3} />
+      <directionalLight position={[5, 5, -5]} intensity={0.3} />
+      <directionalLight position={[-5, 5, -5]} intensity={0.3} />
+      <directionalLight position={[0, -5, 0]} intensity={0.2} />
+      {/* Luces puntuales sutiles para reducir sombras muy duras */}
+      <pointLight position={[3, 3, 3]} intensity={0.2} />
+      <pointLight position={[-3, 3, 3]} intensity={0.2} />
+      <pointLight position={[0, 0, -5]} intensity={0.15} />
       
       <Center>
         <TShirtWithSleeves />

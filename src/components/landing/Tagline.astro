@@ -43,6 +43,7 @@ const translatePath = useTranslatedPath(lang);
 		background-clip: text;
 		-webkit-background-clip: text;
 		line-height: 1.2;
+		transition: background-position-x 0.3s ease-out; /* Transición suave para cambios abruptos */
 	}
 
 	/* Transition variables for smooth section ending */
@@ -108,18 +109,46 @@ const translatePath = useTranslatedPath(lang);
 
 		const split = new SplitText("#services-tagline", { type: "lines" });
 
-		split.lines.forEach((target) => {
-			gsap.to(target, {
+		// Animación de texto simplificada y más predecible
+		const textRevealTl = gsap.timeline({
+			scrollTrigger: {
+				trigger: ".tagline-section",
+				start: "top 80%", // Comenzar temprano
+				end: "20% center", // Terminar cuando el 20% superior esté en el centro
+				scrub: 0.5, // Scrub más suave
+				markers: false,
+				onComplete: () => {
+					// Asegurar que todo esté completamente blanco al finalizar
+					split.lines.forEach((target) => {
+						gsap.set(target, { backgroundPositionX: 0 });
+					});
+				}
+			},
+		});
+
+		// Animar todas las líneas juntas para un efecto más cohesivo
+		split.lines.forEach((target, index) => {
+			textRevealTl.to(target, {
 				backgroundPositionX: 0,
-				ease: "none",
-				scrollTrigger: {
-					trigger: target,
-					markers: false,
-					scrub: 1,
-					start: "top bottom-=20%",
-					end: "bottom bottom-=10%",
-				},
-			});
+				ease: "power1.inOut",
+				duration: 0.8,
+			}, index * 0.02); // Delay mínimo entre líneas
+		});
+
+		// Fallback: Asegurar texto blanco cuando la sección esté completamente visible
+		ScrollTrigger.create({
+			trigger: ".tagline-section",
+			start: "top 10%",
+			onEnter: () => {
+				split.lines.forEach((target) => {
+					gsap.set(target, { 
+						backgroundPositionX: 0,
+						transition: "none" // Evitar conflictos con CSS transition
+					});
+				});
+			},
+			once: true, // Solo ejecutar una vez
+			markers: false,
 		});
 
 		// Transition animation when Tagline section ends (similar to FAQ)
