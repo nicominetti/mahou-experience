@@ -609,9 +609,9 @@ export default function TShirtCustomizer() {
   };
 
   return (
-    <div className="section">
+    <div className="section max-w-8xl mx-auto">
       {/* Visor 3D */}
-      <div className="col-span-4 col-start-1 lg:col-span-6">
+      <div className="col-span-6 col-start-1 lg:col-span-6">
         <div className="col-span-6 w-full max-h-[800px] lg:h-full">
           <Suspense fallback={
             <div className="flex items-center justify-center h-full">
@@ -627,7 +627,7 @@ export default function TShirtCustomizer() {
       </div>
 
       {/* Panel de controles */}
-      <div className="col-span-6 row-start-1 text-5xl leading-tight lg:col-span-6 lg:row-start-auto lg:text-6xl">
+      <div className="col-span-4 row-start-1 text-5xl leading-tight lg:col-span-4 lg:row-start-auto lg:text-6xl">
         <div className="rounded-2xl ">
           <h3 className="text-2xl font-semibold text-gray-900 mb-4">
             Personaliza tu camiseta
